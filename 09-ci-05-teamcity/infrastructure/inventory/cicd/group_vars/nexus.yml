@@ -1,22 +1,30 @@
 ---
 nexus_user_group: nexus
 nexus_user_name: nexus
-nexus_directory_data: "/home/{{ nexus_user_name }}/sonatype-work/nexus3"
-nexus_directory_home: "/home/{{ nexus_user_name }}/nexus"
-nexus_directory_log: "/home/{{ nexus_user_name }}/log"
-nexus_directory_package: "/home/{{ nexus_user_name }}/pkg"
-nexus_directory_tmp: "/home/{{ nexus_user_name }}/tmp"
-nexus_version: 3.14.0-04
-nexus_download_url: https://download.sonatype.com/nexus/3
+
+nexus_version: "3.14.0-04"
+nexus_download_url: "https://download.sonatype.com/nexus/3"
+
+# Путь к установленному Nexus (создаётся как symlink)
+nexus_directory_home: "/opt/nexus"
+
+# Рабочие директории (владелец: nexus)
+nexus_directory_data: "/home/nexus/sonatype-work/nexus3"
+nexus_directory_log: "/home/nexus/log"
+nexus_directory_package: "/home/nexus/pkg"
+nexus_directory_tmp: "/home/nexus/tmp"
+
+# Java 8 для Nexus 3.14
+INSTALL4J_JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
+
+# Сервис и ограничения
 nexus_service_enabled: true
-nexus_ulimit: 65536
-nexus_context_path: /
-nexus_host: 0.0.0.0
-nexus_port: 8081
-nexus_port_check_timeout: 600
-nexus_edition: nexus-oss-edition
-nexus_features: nexus-oss-feature
-nexus_java_heap_size: 1200M
-nexus_java_max_direct_memory: 2G
 nexus_service_start_on_boot: true
+nexus_ulimit: 65536
+
+# Порт и таймаут проверки запуска
+nexus_port: 8081
+nexus_port_check_timeout: 60
+
+# Настройки пространства при необходимости
 nexus_configuration_disk_free_space_limit: ~
