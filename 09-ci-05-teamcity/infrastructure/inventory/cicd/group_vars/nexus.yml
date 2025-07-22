@@ -1,30 +1,27 @@
----
-nexus_user_group: nexus
+# Пользователь и группа для Nexus
 nexus_user_name: nexus
+nexus_user_group: nexus
 
-nexus_version: "3.14.0-04"
+# Версия Nexus и URL для загрузки
+nexus_version: "3.67.1-01"
 nexus_download_url: "https://download.sonatype.com/nexus/3"
 
-# Путь к установленному Nexus (создаётся как symlink)
-nexus_directory_home: "/opt/nexus"
+# Основной каталог Nexus (symlink после распаковки)
+nexus_directory_home: "/home/nexus/nexus"
 
-# Рабочие директории (владелец: nexus)
+# Рабочие директории Nexus (будут созданы playbook-ом)
 nexus_directory_data: "/home/nexus/sonatype-work/nexus3"
 nexus_directory_log: "/home/nexus/log"
 nexus_directory_package: "/home/nexus/pkg"
 nexus_directory_tmp: "/home/nexus/tmp"
 
-# Java 8 для Nexus 3.14
+# Java 8 для Nexus
 INSTALL4J_JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
 
 # Сервис и ограничения
-nexus_service_enabled: true
-nexus_service_start_on_boot: true
 nexus_ulimit: 65536
+nexus_service_start_on_boot: true
 
-# Порт и таймаут проверки запуска
+# Порт Nexus и таймаут ожидания старта
 nexus_port: 8081
-nexus_port_check_timeout: 60
-
-# Настройки пространства при необходимости
-nexus_configuration_disk_free_space_limit: ~
+nexus_port_check_timeout: 180

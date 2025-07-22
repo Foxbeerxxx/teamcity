@@ -1,5 +1,5 @@
 ---
-# Установка Python 3, если не установлен (CentOS 7)
+# Установка Python 3, если не установлен (CentOS 7 — оставлено на случай кросс-платформенности)
 - name: Bootstrap Python if missing
   hosts: nexus
   gather_facts: false
@@ -28,12 +28,27 @@
         shell: /bin/bash
         create_home: yes
 
-    - name: Install Java 8 (CentOS 7)
-      yum:
-        name:
-          - java-1.8.0-openjdk
-          - java-1.8.0-openjdk-devel
+    - name: Show OS family
+      debug:
+        var: ansible_os_family
+
+    - name: Install Java 8 on Ubuntu
+      apt:
+        name: openjdk-8-jdk
         state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Set JAVA_HOME in Nexus user's .bashrc
+      lineinfile:
+        path: "/home/{{ nexus_user_name }}/.bashrc"
+        line: 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64'
+        insertafter: EOF
+        state: present
+        create: yes
+        owner: "{{ nexus_user_name }}"
+        group: "{{ nexus_user_group }}"
+      when: ansible_os_family == "Debian"
 
   tasks:
     - name: Create Nexus directories
@@ -50,11 +65,18 @@
         - "{{ nexus_directory_package }}"
         - "{{ nexus_directory_tmp }}"
 
-    - name: Download Nexus
+    - name: Check if Nexus archive already exists
+      stat:
+        path: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}.tar.gz"
+      register: nexus_tarball
+
+    - name: Download Nexus (with timeout, only if missing)
       get_url:
         url: "{{ nexus_download_url }}/nexus-{{ nexus_version }}-unix.tar.gz"
         dest: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}.tar.gz"
         mode: '0644'
+        timeout: 120
+      when: not nexus_tarball.stat.exists
 
     - name: Extract Nexus
       unarchive:
@@ -103,17 +125,19 @@
         limit_item: nofile
         value: "{{ nexus_ulimit }}"
 
-    - name: Create Nexus systemd service
+    - name: Create Nexus systemd service with NEXUS_DATA
       copy:
         dest: /etc/systemd/system/nexus.service
         content: |
           [Unit]
-          Description=nexus service
+          Description=Nexus Repository Manager
           After=network.target
 
           [Service]
           Type=forking
           LimitNOFILE=65536
+          Environment=INSTALL4J_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+          Environment=NEXUS_DATA={{ nexus_directory_data }}
           User={{ nexus_user_name }}
           Group={{ nexus_user_group }}
           ExecStart={{ nexus_directory_home }}/bin/nexus start
@@ -134,6 +158,8 @@
     - name: Wait for Nexus port if started
       wait_for:
         port: "{{ nexus_port }}"
+        host: "127.0.0.1"
         state: started
-        timeout: "{{ nexus_port_check_timeout }}"
+        timeout: 180
+        delay: 10
       when: nexus_service_start_on_boot | default(true)
