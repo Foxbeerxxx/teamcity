@@ -102,8 +102,11 @@ nexus-01                   : ok=17   changed=2    unreachable=0    failed=0    s
 
 6. `Создаю проект по fork`
 
-![3](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img3.png)
+![4](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img4.png)
 
+7. `Запускаю сборку которая проходит успешно`
+
+![5](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img5.png)
 
 ```
 Поле для вставки кода...
