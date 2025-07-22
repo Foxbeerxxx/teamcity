@@ -9,14 +9,101 @@
 
 
 1. `Создаю 3 ВМ согласно лекции`
+
+![1](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img1.png)
+
 2. `Меняю в hosts.yml , ip адрес и позльзователя `
 3. `Запускаю уже готовый playbook`
 ```
 ansible-playbook -i inventory/cicd/hosts.yml site.yml
 ```
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
+4. `На nexus через корявый плейбук и сотню правок поставился сам сервис`
+```
+alexey@dellalexey:~/dz/teamcity/09-ci-05-teamcity/infrastructure$ ansible-playbook -i inventory/cicd/hosts.yml site.yml
+
+PLAY [Bootstrap Python if missing] ****************************************************************************************
+
+TASK [Ensure python3 is installed (for CentOS 7)] *************************************************************************
+ok: [nexus-01]
+
+PLAY [Get Nexus installed] ************************************************************************************************
+
+TASK [Gathering Facts] ****************************************************************************************************
+[WARNING]: Platform linux on host nexus-01 is using the discovered Python interpreter at /usr/bin/python3.8, but future
+installation of another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.18/reference_appendices/interpreter_discovery.html for more information.
+ok: [nexus-01]
+
+TASK [Create Nexus group] *************************************************************************************************
+ok: [nexus-01]
+
+TASK [Create Nexus user] **************************************************************************************************
+ok: [nexus-01]
+
+TASK [Show OS family] *****************************************************************************************************
+ok: [nexus-01] => {
+    "ansible_os_family": "Debian"
+}
+
+TASK [Install Java 8 on Ubuntu] *******************************************************************************************
+ok: [nexus-01]
+
+TASK [Set JAVA_HOME in Nexus user's .bashrc] ******************************************************************************
+ok: [nexus-01]
+
+TASK [Create Nexus directories] *******************************************************************************************
+ok: [nexus-01] => (item=/home/nexus/log)
+ok: [nexus-01] => (item=/home/nexus/sonatype-work/nexus3)
+ok: [nexus-01] => (item=/home/nexus/sonatype-work/nexus3/etc)
+ok: [nexus-01] => (item=/home/nexus/pkg)
+ok: [nexus-01] => (item=/home/nexus/tmp)
+
+TASK [Check if Nexus archive already exists] ******************************************************************************
+ok: [nexus-01]
+
+TASK [Download Nexus (with timeout, only if missing)] *********************************************************************
+skipping: [nexus-01]
+
+TASK [Extract Nexus] ******************************************************************************************************
+skipping: [nexus-01]
+
+TASK [Set permissions on extracted Nexus] *********************************************************************************
+ok: [nexus-01]
+
+TASK [Create symlink to Nexus directory] **********************************************************************************
+ok: [nexus-01]
+
+TASK [Add NEXUS_HOME to .bashrc] ******************************************************************************************
+ok: [nexus-01]
+
+TASK [Set run_as_user in nexus.rc] ****************************************************************************************
+ok: [nexus-01]
+
+TASK [Raise nofile limit for Nexus user] **********************************************************************************
+ok: [nexus-01]
+
+TASK [Create Nexus systemd service with NEXUS_DATA] ***********************************************************************
+changed: [nexus-01]
+
+TASK [Reload systemd and enable/start Nexus] ******************************************************************************
+changed: [nexus-01]
+
+TASK [Wait for Nexus port if started] *************************************************************************************
+ok: [nexus-01]
+
+PLAY RECAP ****************************************************************************************************************
+nexus-01                   : ok=17   changed=2    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+```
+
+5. `Захожу по ssh и проверяю`
+
+![2](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img2.png)
+![3](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img3.png)
+
+6. `Создаю проект по fork`
+
+![3](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img3.png)
+
 
 ```
 Поле для вставки кода...
@@ -27,7 +114,7 @@ ansible-playbook -i inventory/cicd/hosts.yml site.yml
 ```
 
 `При необходимости прикрепитe сюда скриншоты
-![Название скриншота 1](ссылка на скриншот 1)`
+![1](https://github.com/Foxbeerxxx/teamcity/blob/main/img/img1.png)`
 
 
 ---
